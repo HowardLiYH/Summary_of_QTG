@@ -1,0 +1,26 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "Z:/OptionDesk/interns/WangDing/BackTest_demo/opt_lab"
+		},
+		{
+			"path": "Z:/OptionDesk/interns/WangDing/BackTest_demo/optengine"
+		},
+		{
+			"path": "Z:/OptionDesk/interns/WangDing/BackTest_demo/public_tools"
+		},
+		{
+			"path": "Z:/OptionDesk/interns/WangDing/BackTest_demo/data_manager"
+		},
+		{
+			"path": "Z:/OptionDesk/interns/WangDing/BackTest_demo/examples"
+		},
+		{
+			"path": "Z:/OptionDesk/interns/WangDing/BackTest_demo/multi_data_loader"
+		}
+	],
+	"settings": {}
+}

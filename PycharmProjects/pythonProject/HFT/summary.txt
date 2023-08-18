@@ -1,0 +1,263 @@
+
+Model Architecture:
+The model's architecture is a RLTS Transformer Encoder RL Seq3.
+The number of parameters in the model is 3407.
+Training:
+The model is trained for a total of 1000 epochs.
+The learning rate used during training is 0.1.
+The model is trained using the RLTS optimizer.
+The training process involves calculating the policy-gradient loss.
+The training process includes gradient clipping.
+Data:
+The training data used is the 55data_influx.pkl dataset.
+The dataset is loaded using the load function from the plistlib module.
+The dataset is preprocessed using the stock module.
+Evaluation:
+The model's performance is evaluated using the mean profit and standard deviation of profit metrics.
+The evaluation data is obtained from the StockEnv environment.
+Stabilizing BatchNorm:
+The model's BatchNorm is stabilized by iterating over the dataset and running the model's forward pass on each input.
+Calculating Train RLd3_35:
+The model calculates the RLd3_35 metric on the training dataset.
+The RLd3_35 metric is obtained by running the model's forward pass on each input in the dataset.
+Training the Model:
+The model is trained using a DataLoader for batching the training data.
+The training process involves updating the model's parameters using the RLTS optimizer.
+The training process includes gradient accumulation and clipping.
+The training process logs the policy-gradient loss and ratio.
+Saving the Model:
+The trained model is saved to a file named 'best_model_RLTSTransformerEncoderRLSeq3_10_21-10_25_10_21-10_25_10_21-10'.
+Model Optimization:
+Separating batch normalization layers from the rest of the parameters for optimizing the model.
+Using AdamW optimizer with different weight decay values for batch normalization and other parameters.
+Setting the learning rate and weight decay for the optimizer.
+Action Transformation:
+Applying different transformation techniques to the pre-action values based on the given type.
+Managing negative values in different ways like clamping, sigmoid, or exponential.
+Replacing certain values in the action tensor based on the d_list and d_num arguments.
+Profit Calculation:
+Calculating the total profit, profit positions, and positions dictionary based on chosen valid sell points and chosen value totals.
+Determining the buy and sell points from the chosen action and other parameters.
+Handling deferred positions and maintaining a list of positions and profits before clearing them.
+Second Profit Calculation:
+Converting the action tensor to a numpy array.
+Loading the necessary data for profit calculation.
+Calculating returns and profit positions based on buy and sell prices and valid buy and sell points.
+Deferred Positions:
+Create a list of deferred positions called 'deferred_positions'
+If vp[1] == 1, append (vp[0] + lag1, 1) to deferred_positions
+If vp[1] == 0 and position != 0, append (vp[0] + lag2, 0) to deferred_positions
+Calculate Buy and Sell Prices:
+Load buy_price_base array from file
+Calculate buy_price using buy_price_base and action array
+Load sell_price_base array from file
+Calculate sell_price using sell_price_base and action array
+Find Valid Buy and Sell Points:
+Load tpb array from file
+Load tps array from file
+Find valid buypoints using np.logical_and(tpb <= buy_price - 0.01, tpb != 0)
+Find valid sellpoints using np.logical_and(tps >= sell_price + 0.01, tps != 0)
+Sort Valid Buy and Sell Points:
+Create empty lists colored_valid_buypoint and colored_valid_sellpoint
+Append (vb, 1) to colored_valid_buypoint for each vb in valid_buypoint
+Append (vs, 0) to colored_valid_sellpoint for each vs in valid_sellpoint
+Combine colored_valid_buypoint and colored_valid_sellpoint into sorted_full_list
+Sort sorted_full_list by (x[0], x[1])
+Update Positions:
+Initialize position, position_list, deferred_positions, and clear_list
+For each vp in sorted_full_list:
+If vp[0] >= deferred_positions[i][0], update position and profit
+If vp[1] == 1, append (vp[0] + lag1, 1) to deferred_positions
+If vp[1] == 0 and position > 0, append (vp[0] + lag2, 0) to deferred_positions
+Return Profit and Position:
+Return returns, profit_position
+Calculate Differential Sharpe Ratio:
+Calculate A_delta, B_delta, A_t, and B_t based on R_t, A_tm1, B_tm1, and eta
+Calculate nominator and denominator
+Calculate reward using nominator and denominator
+Create Array Function:
+Return a rounded array
+Calculate Profit 3nd:
+Load std array from file
+If args.use_true_lag is true, load lags_list array from file
+Initialize returns, profit_position, position_np, and position_rt
+Initialize returns2, clear_time, trades, and actual_closepoints
+Load time_index array from file
+Load ap1_tk and bp1_tk arrays from file
+If type0 is 'buy', calculate buy_price_base and buy_price
+Calculate sell_price_base and sell_price
+Find valid buypoints and sellpoints
+Sort valid buypoints and sellpoints
+Update positions
+Return returns, profit_position
+Buy and Sell Points:
+The script calculates buy and sell points based on the price data.
+These points are determined by specific conditions being met.
+Valid Buy and Sell Points:
+Only certain buy and sell points that meet the specified conditions are considered valid.
+These valid points are used for further calculations and trading decisions.
+Deferred Positions:
+When a valid buy point is encountered, a deferred position is created.
+A deferred position is also created for a valid sell point while there is an existing position.
+Deferred positions will be processed later based on specific rules.
+Processing Deferred Positions:
+Deferred positions are processed when their corresponding conditions are met.
+Processing involves updating position lists, calculating profits, and clearing positions.
+Buy and Sell Price Calculation:
+Buy and sell prices are calculated based on the base prices and specific factors.
+Factors include actions, offsets, and predictions.
+These calculated prices are used for trading decisions.
+Time Index:
+The time index is loaded and used for sorting and indexing the data.
+It helps in tracking the sequence of buy and sell points.
+Trading Point Data:
+Trading points and other related data are collected and stored.
+They are used for analyzing trading performance and generating reports.
+Profit Calculation:
+Profits are calculated based on the buy and sell prices.
+Various factors such as maximum profit and position size are considered.
+Points of interest calculation:
+The code calculates points of interest for buying and selling stocks based on various conditions.
+It calculates valid buy and sell points based on price thresholds and stock data.
+Position tracking:
+The code keeps track of the position and updates it based on buying and selling events.
+Deferred positions are also managed and accounted for in the position calculation.
+Profit calculation:
+The code calculates the profit for each buying and selling event.
+It considers factors like price difference and transaction costs.
+The profits are categorized into standard and non-standard trades.
+Trade execution:
+The code executes trades by pairing valid buy and sell points.
+It clears the position list after each trade and keeps track of deferred positions.
+Sell Out Maker Condition:
+If the position is greater than 0 and vp is in colored_valid_sellpoint_std_set and sell_price_std[vp] is greater than bp1_tk[vp+1], then sell out maker occurs.
+The vp and sell_price_std[vp] are stored in sub_sell_points.
+The true_position is updated by subtracting sell_position from it.
+The updated true_position is stored in true_position_list.
+The vp is stored in position_vps.
+Buy In Maker Condition:
+If the position is less than 0 and vp is in colored_valid_buypoint_std_set and buy_price_std[vp] is less than ap1_tk[vp+1], then buy in maker occurs.
+The vp and buy_price_std[vp] are stored in sub_buy_points.
+The true_position is updated by adding buy_position to it.
+The updated true_position is stored in true_position_list.
+The vp is stored in position_vps.
+Sell Out Margin Condition:
+If the position is greater than -10 and vp is in colored_valid_sellpoint_std_set and sell_price_std[vp] is greater than bp1_tk[vp+1], then sell out margin occurs.
+The vp and sell_price_std[vp] are stored in sub_sell_points.
+The true_position is updated by subtracting sell_position from it.
+The updated true_position is stored in true_position_list.
+The vp is stored in position_vps.
+Buy In Margin Condition:
+If vp is less than 10 and vp is in colored_valid_buypoint_std_set and buy_price_std[vp] is less than ap1_tk[vp+1], then buy in margin occurs.
+The vp and buy_price_std[vp] are stored in sub_buy_points.
+The true_position is updated by adding buy_position to it.
+The updated true_position is stored in true_position_list.
+The vp is stored in position_vps.
+Generating Dataframes:
+Create dataframes for data_2 and data_3 using the given arguments and variables.
+Set the index of data_2 and data_3 to the 'time' column.
+Writing Data to InfluxDB:
+Iterate through the range of data length divided by 1e5 and write the corresponding data to InfluxDB.
+Write the remaining data to InfluxDB after the last iteration.
+Calculating Profit:
+Set action and action2 arrays to zeros with length specified by the 'length' variable.
+Calculate the returns, profit_position, and position_np arrays with zeros.
+Set the clear_time variable to 0.
+Load the necessary files for profit calculation.
+Set the buy_price and sell_price arrays based on the action and action2 arrays.
+Find valid buy points and sell points based on the loaded files.
+Sort the valid buy and sell points.
+Create position and deferred_positions arrays.
+Store trading points and clear points.
+Set plausible_points and plausible_points2 arrays with valid buy points and sell points respectively.
+Add related closing points to the array.
+Position Calculation:
+Calculate the position and profit based on deferred positions.
+Update the position and profit for each trade.
+Deferred Positions:
+Update the deferred positions based on current positions.
+Check the conditions for adding or clearing deferred positions.
+Adding Deferred Positions:
+Add deferred positions if the conditions are met.
+Keep track of the trades made.
+Selling Positions:
+Check if any positions are to be sold.
+Add deferred positions for selling positions.
+Calculating Buy and Sell Prices:
+Calculate the buy and sell prices based on the base prices and actions.
+Calculate the buy and sell prices with standard deviations.
+Valid Buy Points:
+Identify the valid buy points based on the calculated prices.
+Check for any colored valid buy points.
+Valid Sell Points:
+Identify the valid sell points based on the calculated prices.
+Check for any colored valid sell points.
+Position Management:
+Manage the positions based on valid buy and sell points.
+Keep track of the trading points and clear list.
+Position Calculation:
+The position is calculated based on the number of buy and sell position lists
+The position is determined based on certain conditions, such as the value of std, colored_valid_buypoint_std_set, and colored_valid_sellpoint_std_set
+Model Weights:
+The model weights are frozen using the function freeze_model_weights()
+The model weights are activated using the function act_model_weights()
+Drawdown:
+The drawdown is calculated based on the maximum accumulated profit and the actual profit
+Calculating Profit:
+The profit is calculated based on the chosen position and lag values
+Multiple lines of positions and profits are calculated and stored in lines_position
+Saving Results:
+The calculated positions and profits are saved in the database if write_db is set to true
+The time index is loaded from a file and used to save the results
+Summary Point 1:
+The code snippet is written in Python and involves data manipulation and analysis using pandas and numpy libraries.
+The code snippet is part of a larger program that deals with calculating profits and positions based on chosen values.
+Summary Point 2:
+The code snippet includes a function called 'calculate_profit_with_chosen_3' that calculates the profit based on chosen sell points, chosen value total, position, and lag parameters.
+The function uses numpy arrays and loops to iterate over the data and calculate the profit.
+Summary Point 3:
+The code snippet also includes a loop that writes data to a database using the InfluxDB client.
+The data is written in chunks of 1e5 rows at a time.
+Summary Point 4:
+The code snippet includes code for loading a pre-trained model and performing evaluation on different datasets.
+The model is a deep reinforcement learning model for stock trading.
+Summary Point 5:
+The code snippet demonstrates how to stabilize the batch normalization layers in the model.
+This is done by calling a function called 'stabalize_bn' before performing evaluation.
+Summary Point 6:
+The code snippet uses the 'torch.load' function to load a saved model from a file.
+The file path is constructed using various arguments passed to the program.
+Summary Point 7:
+The code snippet calls a function called 'calculate_train_RLd3_35' to calculate actions based on the model's predictions.
+The function takes in a data source and a test field argument.
+Summary Point 8:
+The code snippet outputs the calculated actions to different datasets, including the train, test, and test2 data sources.
+The actions are calculated using an argmax strategy.
+Training and Evaluation:
+The code snippet shows a training and evaluation process for a reinforcement learning model.
+The model is trained on a stock dataset and the training rewards for each epoch are logged using WandB.
+The evaluation results, including reward sum, clear time, and sharpe ratios, are also logged.
+Different test datasets are used to evaluate the model, and their respective evaluation results are logged.
+The best performing model is saved after each epoch if it achieves a higher reward sum than the previous best.
+Profit Calculation and Visualization:
+Profit is calculated using the action and action_ variables, which represent the predicted actions of the model.
+The profit calculation takes into account lag values and different test datasets.
+The calculated profits are logged using WandB.
+Profit visualization is done using matplotlib, showing the profit trends for different positions and actions taken by the model.
+Summary Point 1:
+Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+Nullam in massa vitae felis commodo imperdiet.
+Summary Point 2:
+Phasellus tincidunt metus quis tortor mollis, vel vestibulum lacus accumsan.
+Fusce ut mauris at est gravida finibus.
+Summary Point 3:
+Vestibulum facilisis neque vitae dolor pellentesque, non tristique quam semper.
+Donec tempus ligula nec eros volutpat rutrum.
+Summary Point 4:
+Sed suscipit nunc a lectus congue, in euismod massa lacinia.
+Curabitur nec turpis rutrum, mattis massa et, egestas enim.
+Summary Point 5:
+Maecenas a tellus eu elit tristique ullamcorper.
+Pellentesque ac magna fringilla, facilisis arcu ut, dignissim velit.
+
+Start New Chat
